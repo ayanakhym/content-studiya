@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Контент-студия PRO</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f4f3f9; --card:#ffffff; --ink:#161320; --muted:#6c6a7a; --line:#eceaf3;
+    --g2:#f77737; --g3:#e1306c; --g4:#c13584; --g5:#833ab4;
+    --grad:linear-gradient(120deg,var(--g2),var(--g3) 55%,var(--g5));
+    --grad-soft:linear-gradient(120deg,#fff3ea,#fdeaf1 55%,#f2eafb);
+    --ok:#16a34a; --radius:20px; --shadow:0 10px 34px rgba(60,20,80,.10);
+  }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:22px 18px 90px}
+  a{color:var(--g4)}
+
+  /* ===== HERO ===== */
+  .hero{position:relative;overflow:hidden;border-radius:28px;padding:74px 30px 78px;text-align:center;box-shadow:var(--shadow);
+    background:
+      radial-gradient(120% 150% at 8% 6%, #ffd27a 0%, rgba(255,210,122,0) 45%),
+      radial-gradient(120% 150% at 92% 12%, #ff7a45 0%, rgba(255,122,69,0) 50%),
+      radial-gradient(150% 170% at 85% 105%, #7d34c0 0%, rgba(125,52,192,0) 55%),
+      radial-gradient(130% 150% at 12% 100%, #e1306c 0%, rgba(225,48,108,0) 52%),
+      linear-gradient(125deg,#f77737,#e1306c 52%,#833ab4);}
+  .hero::before{content:"";position:absolute;inset:0;opacity:.10;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .blob{position:absolute;border-radius:50%;filter:blur(46px);opacity:.55;pointer-events:none}
+  .blob.a{width:240px;height:240px;background:#ffcf6b;top:-70px;left:-40px}
+  .blob.b{width:220px;height:220px;background:#ff5b8a;bottom:-80px;right:-30px}
+  .hero .kick{position:relative;display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);backdrop-filter:blur(6px);color:#fff;padding:7px 15px;border-radius:999px;font-size:12.5px;font-weight:700;letter-spacing:.4px;margin-bottom:20px}
+  .hero h1{position:relative;margin:0;color:#fff;font-weight:800;letter-spacing:-1px;line-height:1.02;font-size:clamp(38px,8vw,66px);text-shadow:0 4px 30px rgba(60,10,50,.28)}
+  .hero h1 .thin{font-weight:400;opacity:.92}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-top:20px}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+  @media(max-width:680px){.grid{grid-template-columns:1fr}}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field.full{grid-column:1/-1}
+  label{font-size:13px;font-weight:650;color:#413d4e}
+  label .opt{font-weight:400;color:#a09eb0}
+  input,textarea,select{background:#fbfbfe;border:1.5px solid var(--line);border-radius:12px;color:var(--ink);padding:12px 13px;font-size:14.5px;font-family:inherit;width:100%;transition:.15s}
+  textarea{resize:vertical;min-height:66px}
+  input::placeholder,textarea::placeholder{color:#b6b4c2}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--g3);box-shadow:0 0 0 4px rgba(225,48,108,.10)}
+
+  .seg{display:flex;gap:8px}
+  .seg button{flex:1;background:#fbfbfe;border:1.5px solid var(--line);border-radius:12px;color:var(--muted);padding:12px;font-size:14px;font-weight:650;cursor:pointer;font-family:inherit}
+  .seg button.on{background:var(--grad-soft);border-color:var(--g3);color:var(--g4)}
+
+  .drop{grid-column:1/-1;border:2px dashed #e3d7ea;border-radius:14px;padding:22px;text-align:center;cursor:pointer;background:linear-gradient(#fdfbfe,#fbf7fc)}
+  .drop:hover,.drop.hover{border-color:var(--g3);background:var(--grad-soft)}
+  .drop .ic{font-size:28px}
+  .drop p{margin:6px 0 0;color:var(--muted);font-size:13px}
+  .drop b{color:var(--ink)}
+  .thumbs{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px;justify-content:center}
+  .thumb{position:relative;width:76px;height:76px;border-radius:12px;overflow:hidden;border:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .thumb span{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;border-radius:50%;width:20px;height:20px;font-size:13px;line-height:20px;text-align:center;cursor:pointer}
+
+  .btn{border:none;cursor:pointer;border-radius:13px;font-weight:700;font-family:inherit;transition:transform .1s,box-shadow .2s,opacity .2s}
+  .btn:active{transform:translateY(1px)}
+  .btn-main{background:var(--grad);color:#fff;width:100%;padding:17px;font-size:16.5px;box-shadow:0 12px 26px rgba(193,53,132,.34);display:flex;align-items:center;justify-content:center;gap:9px;margin-top:22px}
+  .btn-main:disabled{opacity:.55;cursor:default;box-shadow:none}
+  .btn-ghost{background:#fff;color:#514c60;border:1.5px solid var(--line);padding:10px 15px;font-size:13.5px;font-weight:600}
+  .row-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;justify-content:center}
+  .modelrow{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:16px;color:var(--muted);font-size:12.5px}
+  .modelrow select{width:auto;padding:8px 10px;font-size:12.5px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .chip{background:var(--grad-soft);border:1px solid #f0e2ec;border-radius:999px;padding:6px 12px;font-size:12.5px;color:#7a4468;font-weight:600}
+  .chip b{color:var(--g4);margin-right:5px}
+
+  #progress{display:none}
+  .prog-head{display:flex;align-items:center;gap:14px}
+  .spinner{width:26px;height:26px;border-radius:50%;border:3px solid #eee;border-top-color:var(--g3);animation:spin 1s linear infinite;flex:none}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .prog-head h2{font-size:17px;margin:0}
+  .prog-head p{color:var(--muted);font-size:13px;margin:2px 0 0}
+  .bar{height:9px;background:#efedf5;border-radius:999px;overflow:hidden;margin:14px 0 18px}
+  .bar>i{display:block;height:100%;width:0;background:var(--grad);border-radius:999px;transition:width .4s}
+  .steps{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  @media(max-width:680px){.steps{grid-template-columns:1fr}}
+  .step{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:11px;font-size:13px;color:var(--muted);background:#fbfbfe}
+  .step .dot{width:20px;height:20px;border-radius:50%;border:2px solid #ddd;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px}
+  .step.run{border-color:var(--g3);color:var(--ink);background:var(--grad-soft)}
+  .step.run .dot{border-color:var(--g3);border-top-color:transparent;animation:spin .8s linear infinite}
+  .step.done .dot{background:var(--ok);border-color:var(--ok);color:#fff}
+  .step.err .dot{background:#dc2626;border-color:#dc2626;color:#fff}
+
+  #results{display:none}
+  .res-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .res-top h2{font-size:20px;margin:0}
+  .res-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .grouplab{font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#b06;background:var(--grad-soft);border:1px solid #f0e2ec;display:inline-block;padding:5px 12px;border-radius:999px;margin:20px 0 4px}
+  .part{border:1px solid var(--line);border-radius:15px;margin-top:12px;overflow:hidden;background:#fff;
+    border-top:3px solid transparent;background-image:linear-gradient(#fff,#fff),var(--grad);background-origin:border-box;background-clip:padding-box,border-box;box-shadow:0 3px 14px rgba(60,20,80,.05)}
+  .part>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:13px;padding:16px 17px;font-weight:700;font-size:15px}
+  .part>summary::-webkit-details-marker{display:none}
+  .part>summary .idx{width:34px;height:34px;border-radius:10px;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex:none;box-shadow:0 4px 10px rgba(193,53,132,.3)}
+  .part>summary .chev{margin-left:auto;color:#c3c0d0;transition:transform .2s;font-size:18px}
+  .part[open]>summary .chev{transform:rotate(90deg)}
+  .part .body{padding:4px 22px 20px;border-top:1px solid var(--line)}
+  .md h1{font-size:19px;margin:16px 0 8px}.md h2{font-size:16px;margin:16px 0 8px}
+  .md h3{font-size:14.5px;margin:14px 0 6px;color:var(--g4)}
+  .md p{margin:8px 0;font-size:14px}.md ul,.md ol{margin:8px 0;padding-left:22px}
+  .md li{font-size:14px;margin:4px 0}.md strong{color:#2a2436}
+  .md table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px;border-radius:8px;overflow:hidden}
+  .md th,.md td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  .md th{background:#faf7fc;color:#6f4a62;font-weight:650}
+  .md tr:nth-child(even) td{background:#fcfbfe}
+  .md blockquote{margin:10px 0;padding:8px 14px;background:#faf7fc;border-left:3px solid var(--g3);border-radius:6px;color:#5c5768}
+  .md code{background:#f3eef7;padding:1px 5px;border-radius:5px;font-size:12.5px}
+  .parterr{color:#b91c1c;font-size:13px}
+  .visnote{background:#eef7ff;border:1px solid #cfe6fb;border-radius:14px;padding:14px 16px;font-size:13px;color:#2b5a80;margin-top:12px}
+  .notice{background:#fff8ec;border:1px solid #f6e2be;color:#8a6414;border-radius:12px;padding:11px 14px;font-size:13px;margin-top:14px}
+  .cli{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;margin-top:8px;background:#fbfbfe;flex-wrap:wrap}
+  .cli-info{display:flex;flex-direction:column;gap:2px}
+  .cli-info b{font-size:14px}.cli-info span{font-size:12.5px;color:var(--muted)}.cli-info small{font-size:11.5px;color:#a09eb0}
+  .cli-acts{display:flex;gap:6px;flex-wrap:wrap}
+  .cli-acts .btn{padding:7px 11px;font-size:12.5px}
+  .foot{color:#a3a1b0;font-size:12px;text-align:center;margin-top:30px}
+  @media print{
+    @page{margin:14mm}
+    body{background:#fff}
+    .wrap{padding:0;max-width:none}
+    .hero,#formCard,#clientsCard,#progress,.res-actions,.foot,.notice{display:none!important}
+    #results{box-shadow:none;border:none;padding:0}
+    .res-top h2{font-size:22px}
+    .part{break-inside:avoid;box-shadow:none;border:1px solid #ddd}
+    .part>summary{background:#faf7fc}
+    .part>summary .chev{display:none}
+    .part .body{display:block!important}
+    .grouplab{background:none;border:none;color:#c13584;padding-left:0}
+    details.part>.body{display:block!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="blob a"></div><div class="blob b"></div>
+    <span class="kick">✦ AI · Vision · Контент под ключ</span>
+    <h1>Контент-студия <span class="thin">PRO</span></h1>
+  </div>
+
+  <div class="card" id="clientsCard" style="display:none">
+    <div class="res-top"><h2>💾 Мои клиенты</h2>
+      <div class="res-actions">
+        <button class="btn btn-ghost" onclick="exportDB()">⬇ Бэкап базы</button>
+        <label class="btn btn-ghost" style="cursor:pointer">⬆ Импорт<input type="file" id="importFile" accept="application/json" hidden></label>
+      </div>
+    </div>
+    <div id="clientList"></div>
+  </div>
+
+  <div class="card" id="formCard">
+    <div class="grid">
+      <div class="field full"><label>Instagram аккаунт</label><input id="f_ig" placeholder="@example.blog"></div>
+      <div class="field"><label>Тип аккаунта</label>
+        <div class="seg" id="seg">
+          <button type="button" data-val="Действующий" class="on">Действующий</button>
+          <button type="button" data-val="С нуля">С нуля</button>
+        </div></div>
+      <div class="field"><label>Язык контента</label>
+        <div class="seg" id="segLang">
+          <button type="button" data-val="Русский" class="on">Русский</button>
+          <button type="button" data-val="Қазақша">Қазақша</button>
+        </div></div>
+      <div class="field full"><label>Ниша, эксперт и продукты <span class="opt">— чем занимается, кто эксперт, что продаёт и по чём</span></label>
+        <textarea id="f_niche" placeholder="Онлайн-нутрициолог, диплом + 4 года практики, сама похудела на 18 кг. Женщины 30–45, похудение без диет. Сопровождение 3 мес — 45 000 ₽, мини-курс — 4 900 ₽."></textarea></div>
+      <div class="field full"><label>Конкуренты — аккаунты <span class="opt">— по желанию; впишешь — разберу именно их, оставишь пустым — найду сам</span></label>
+        <textarea id="f_comp" placeholder="@acc1, @acc2, @acc3 — аккаунты конкурентов для анализа"></textarea></div>
+      <div class="drop" id="drop">
+        <div class="ic">📷</div>
+        <p><b>Скриншоты профиля</b> — шапка, лента, Reels, статистика, закреп</p>
+        <p>перетащи сюда или нажми · их прочитает Claude Vision</p>
+        <input type="file" id="fileInput" accept="image/*" multiple hidden>
+        <div class="thumbs" id="thumbs"></div>
+      </div>
+    </div>
+
+    <button class="btn btn-main" id="goBtn" onclick="generate()">🚀 Создать продукт</button>
+    <div class="row-btns"><button class="btn btn-ghost" onclick="clearAll()">Очистить</button></div>
+    <div style="margin-top:18px"><div class="chips" id="chips"></div></div>
+  </div>
+
+  <div class="card" id="progress">
+    <div class="prog-head"><div class="spinner"></div>
+      <div><h2 id="progTitle">Собираю продукт…</h2><p id="progSub">Части появляются по мере готовности.</p></div>
+    </div>
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="steps" id="steps"></div>
+  </div>
+
+  <div class="card" id="results">
+    <div class="res-top"><h2 id="resTitle">Продукт готов</h2>
+      <div class="res-actions">
+        <button class="btn btn-ghost" onclick="retryFailed()">↻ Повторить неудавшиеся</button>
+        <button class="btn btn-ghost" onclick="printPDF()">🖨 Скачать PDF</button>
+        <button class="btn btn-ghost" onclick="restart()">↺ Новый клиент</button>
+      </div>
+    </div>
+    <div id="visBox"></div>
+    <div id="parts"></div>
+  </div>
+
+  <p class="foot">Контент-студия PRO • Claude Vision + методики Content Navigator и Content-завод</p>
+</div>
+
+<script>
+/* Ключ на сервере (api/generate), в браузер не попадает */
+
+const PARTS=[
+ {n:'01',t:'Анализ Instagram',group:'Аналитика',vision:true,task:s=>`Экспертный аудит Instagram-профиля${s.type==='С нуля'?' (аккаунт С НУЛЯ — вместо аудита стратегия упаковки с чистого листа)':' по приложенным скринам'}: считывается ли за 3 секунды кто это/для кого/результат; шапка; форматы и наличие лица; Reels и сторис, продаёт ли; воронка внимания и разрывы; ТОП-7 ошибок; ТОП-7 точек роста с действиями на месяц; вывод — что мешает зарабатывать. Опирайся на то, что реально видно на скринах.`},
+ {n:'02',t:'Анализ ЦА',task:s=>`10 конкретных сегментов ЦА (человек+ситуация+потребность, различаются по мотивации). Затем по 1–2 самым платёжеспособным — глубокий портрет: топ-7 болей, топ-7 желаний, топ-7 возражений, топ-7 ценностей, интересы. От первого лица, без общих слов.`},
+ {n:'03',t:'Распаковка эксперта',task:s=>`Распаковка личности: история (дно→результат), ценности, уникальный метод, регалии и точки доверия, сближающие уязвимые истории, формула позиционирования «Я помогаю [кому] достичь [результат] через [метод], без [боль]», 5 опорных тем на годы.`},
+ {n:'04',t:'Продуктовая матрица',group:'Стратегия и продукт',task:s=>`Линейка: лид-магнит→трипваер→основной→премиум. Для каждого: для кого, проблема, формат, ориентир цены, результат. Встрой существующие продукты и цены. Логика движения по лесенке. Таблицей.`},
+ {n:'05',t:'Анализ конкурентов',web:true,task:s=>`Найди через веб-поиск и проанализируй РЕАЛЬНЫХ конкурентов в этой нише и регионе. ${s.competitors?('Разбери именно эти аккаунты, которые указал пользователь: '+s.competitors+' — проверь их через поиск. Если их меньше 5 — дополни реальными из ниши.'):'Найди 5 реальных конкурентов (блогеров/экспертов/студий) в этой нише и укажи их @ник или ссылку.'}
+Используй поиск, чтобы собрать факты: ищи по нише, региону, ключевым продуктам, отзывам, рейтингам. Приводи источники.
+По каждому конкуренту разбери 5 пунктов:
+1. Продуктовая линейка и её формат.
+2. Маркетинговая стратегия (привлечение, прогрев, позиционирование, офферы).
+3. Каналы продаж (Instagram, Telegram, сайт, маркетплейсы, директ, вебинары).
+4. Средний чек (ориентир, из найденного).
+5. Продающий контент в соцсетях (форматы и приёмы, что реально продаёт).
+Оформи сравнительной таблицей по этим 5 критериям. В конце — чем наш эксперт отстроится и 3–5 незанятых углов.
+ВАЖНО: опирайся на найденное в поиске, не выдумывай. Если по пункту данных нет — помечай «нужно проверить», а не подставляй вымышленные цифры.`},
+ {n:'06',t:'Стратегия монетизации',task:s=>`Монетизация: источники дохода; с чего начать при текущих охватах; быстрые/системные деньги; декомпозиция до цели по выручке на их ценах с расчётом; что допилить; календарь запусков на квартал.`},
+ {n:'07',t:'Воронки',task:s=>`4 воронки под ресурсы эксперта (Reels, сторис, лид-магнит в директ, бесплатная диагностика). Для каждой: путь клиента по шагам, где в Instagram, продукт и сегмент, плюсы/минусы. Итог: какие 2 внедрить первыми.`},
+ {n:'08',t:'Контент-план на 30 дней',group:'Контент',task:s=>`Таблица на 30 дней: День | Стадия | Формат | Тема | Хук | CTA. Логика знакомство→доверие→продажа. Темы конкретные, без повторов, форматы чередуются, дни продаж привязаны к продуктам. После таблицы — список хуков.`},
+ {n:'09',t:'Сценарий: закадровый голос',task:s=>`Reels «закадровый голос»: название, 30–45 сек, текст на обложке, заголовок+хэштеги, таблица Тайминг|Текст за кадром|Что в кадре|Текст на экране. Хук→ставка→польза→CTA.`},
+ {n:'10',t:'Сценарий: говорящая голова',task:s=>`Reels «говорящая голова»: название, 40–60 сек, обложка, заголовок+хэштеги, реплики по таймингу с пометками (СМОТРИТ В КАМЕРУ),(ПАУЗА),(АКЦЕНТ),(ЖЕСТ),(ТЕКСТ НА ЭКРАНЕ:…). Живая речь.`},
+ {n:'11',t:'Сценарий: подкаст',task:s=>`Подкаст 15–25 мин: название и описание, главный тезис, структура с тайм-кодами, 5 цитат-вырезок для Reels, 7 вопросов для раскрытия.`},
+ {n:'12',t:'Пост-карусель',task:s=>`Карусель 6–8 слайдов: слайд 1 обложка-хук; 2..N-1 тезис/шаг + что показать; последний — CTA. Плюс caption и 3–5 хэштегов. Формат: гайд или «было→стало».`},
+ {n:'13',t:'Прогревы в сторис на 7 дней',task:s=>`Прогрев 7 дней к покупке основного продукта. По дням (сближение→боль→метод→доверие→кейсы/возражения→анонс→продажа): цель + 4–6 экранов (реплика + что показать + интерактив). Продажа мягкая. Таблицей.`},
+ {n:'14',t:'Оформление био',vision:true,task:s=>`Собери готовую к вставке шапку профиля (био). Дай: 3 варианта строки имени (name) с ключевым словом для поиска; 3 варианта описания до 150 символов — с оффером и результатом, кто/для кого/как; строку с призывом к действию; идею для ссылки и кнопок; список 5–7 актуальных (highlights) с названиями; идею закреплённого поста/сторис. Всё копипаст-готово, под этого эксперта${s.type==='С нуля'?'':', с учётом того что видно на скрине текущей шапки'}.`},
+ {n:'15',t:'Методология продуктов',group:'Методология продуктов',task:s=>`Разработай методологию для каждого продукта из продуктовой линейки эксперта (опирайся на продуктовую матрицу и нишу). Разбей на 4 раздела:
+
+1. ЛИД-МАГНИТ. Методология: какая задача (захват контакта и доверия), принципы сильного лид-магнита, как он связан с основным продуктом. Затем дай 10 готовых образцов лид-магнитов под эту нишу — по каждому: название, формат (PDF/чек-лист/гайд/мини-видео/тест и т.п.), краткое содержание (2–4 пункта, что внутри), для какого сегмента и какую боль закрывает.
+
+2. ТРИПВАЕР. Методология: зачем нужен, логика первой недорогой покупки, как выбирать наполнение и цену. Затем 5 образцов трипваеров под нишу — по каждому: название, формат, содержание, ориентир цены, как подводит к основному продукту.
+
+3. ОСНОВНОЙ ПРОДУКТ. Методология: как построить, структура/наполнение (модули или этапы сопровождения), как обеспечивает результат, длительность и формат.
+
+4. ПРЕМИУМ. Методология: для кого, чем отличается от основного, наполнение и формат под высокий чек.
+
+Конкретно под нишу этого эксперта, без воды. Оформи заголовками и списками.`}
+];
+
+const KEY='cs_pro_v2';
+let acctType='Действующий', contentLang='Русский', shots=[], results=[], visualNotes='';
+function val(id){return (document.getElementById(id).value||'').trim();}
+function v(x,f){return x&&x.length?x:f;}
+function fields(){return{ig:val('f_ig'),niche:val('f_niche'),competitors:val('f_comp'),type:acctType,lang:contentLang,shots:shots.length};}
+const MODEL='claude-opus-4-8';
+function getModel(){return MODEL;}
+function langReq(){return contentLang==='Қазақша'?'полностью на КАЗАХСКОМ языке (қазақ тілінде): все идеи, тексты, заголовки и сценарии — на казахском, без вставок на русском':'на русском языке';}
+
+document.getElementById('chips').innerHTML=PARTS.map(p=>`<span class="chip"><b>${p.n}</b>${p.t}</span>`).join('');
+document.querySelectorAll('#seg button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#seg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');acctType=b.dataset.val;save();});
+document.querySelectorAll('#segLang button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#segLang button').forEach(x=>x.classList.remove('on'));b.classList.add('on');contentLang=b.dataset.val;save();});
+
+const drop=document.getElementById('drop'),fileInput=document.getElementById('fileInput'),thumbs=document.getElementById('thumbs');
+drop.onclick=e=>{if(e.target.tagName!=='SPAN')fileInput.click();};
+['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('hover');}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('hover');}));
+drop.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
+fileInput.onchange=e=>addFiles(e.target.files);
+function addFiles(list){[...list].forEach(f=>{if(!f.type.startsWith('image/'))return;const r=new FileReader();r.onload=ev=>{shots.push({name:f.name,src:ev.target.result});renderThumbs();};r.readAsDataURL(f);});}
+function renderThumbs(){thumbs.innerHTML='';shots.forEach((s,i)=>{const d=document.createElement('div');d.className='thumb';d.innerHTML=`<img src="${s.src}"><span data-i="${i}">×</span>`;d.querySelector('span').onclick=ev=>{ev.stopPropagation();shots.splice(i,1);renderThumbs();};thumbs.appendChild(d);});}
+
+const WEB_TOOL=[{type:'web_search_20250305',name:'web_search',max_uses:6}];
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+async function anth(content,maxTokens,tools){
+  const body={model:getModel(),max_tokens:maxTokens||2400,messages:[{role:'user',content}]};
+  if(tools) body.tools=tools;
+  let lastErr='ошибка';
+  for(let attempt=0;attempt<5;attempt++){
+    let res;
+    try{res=await fetch('/api/generate',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});}
+    catch(e){lastErr='сеть: '+(e.message||'нет соединения');await sleep(1500*(attempt+1));continue;}
+    if(res.ok){const j=await res.json();return (j.content||[]).map(b=>b.text||'').join('').trim();}
+    let em='';try{em=(await res.json()).error?.message||'';}catch(e){}
+    lastErr='API '+res.status+(em?': '+em.slice(0,180):'');
+    if(res.status===429||res.status===500||res.status===503||res.status===529){
+      const ra=parseInt(res.headers.get('retry-after'))||0;
+      await sleep(ra?ra*1000:Math.min(25000,2000*Math.pow(2,attempt)));continue;}
+    throw new Error(lastErr);
+  }
+  throw new Error(lastErr+' — не удалось после нескольких попыток (перегрузка/лимит)');
+}
+function imgBlocks(){return shots.slice(0,8).map(sh=>{const m=sh.src.match(/^data:(.*?);base64,(.*)$/);return m?{type:'image',source:{type:'base64',media_type:m[1],data:m[2]}}:null;}).filter(Boolean);}
+async function analyzeShots(s){if(!shots.length)return'';const prompt=`Это скриншоты Instagram-профиля (${v(s.ig,'клиент')}). Опиши ФАКТАМИ, что реально видно, не додумывая: текст шапки (имя, описание, ссылка, кнопки), аватар; темы и стиль ленты; есть ли лицо в кадре; наличие и темы Reels; закреплённые сторис; любые цифры статистики (подписчики, охваты, вовлечённость). Если чего-то не видно — так и скажи. Компактно, по разделам. Ответь ${langReq()}.`;return await anth([{type:'text',text:prompt}].concat(imgBlocks()),1400);}
+
+function context(s){const typ=s.type==='С нуля'?'аккаунт создаётся С НУЛЯ (стратегия с чистого листа)':'аккаунт действующий';
+  return `Данные:
+- Instagram: ${v(s.ig,'—')}
+- Тип: ${s.type} (${typ})
+- Язык вывода: ${s.lang}
+- Ниша, эксперт, продукты и цены: ${v(s.niche,'—')}
+- Конкуренты (аккаунты для анализа): ${v(s.competitors,'не заданы — найди сам через веб-поиск')}
+${visualNotes?('\nЧто видно на скринах (Vision):\n'+visualNotes+'\n'):''}`;}
+function basePrompt(s,part,prior){return `Ты — команда экспертов (маркетолог, контент-стратег, SMM, сценарист, редактор-гуманизатор) по методикам Content Navigator и Content-завод.
+
+${context(s)}${prior?('\nОпирайся на уже сделанный анализ:\n'+prior+'\n'):''}
+ВАЖНО — учитывай тип аккаунта во ВСЕХ идеях, темах, сценариях и прогревах. ${s.type==='Действующий'?'Аккаунт ДЕЙСТВУЮЩИЙ: у него уже есть аудитория и контент. Всё делай для развития и монетизации существующего блога — не предлагай «начать с нуля», «завести аккаунт», «сделать самый первый пост», «набрать первых подписчиков». Сценарии и прогревы рассчитаны на текущую аудиторию.':'Аккаунт С НУЛЯ: аудитории почти нет. Идеи и сценарии учитывают старт — базовая упаковка, знакомство, набор первой аудитории, первые форматы.'}
+ЗАДАЧА (часть «${part.t}»): ${part.task(s)}
+
+Требования: пиши ${langReq()}, сразу по делу без вступлений. Markdown (##/###, списки, таблицы). Живой язык, без канцелярита и штампов. Заголовки без эмодзи, кавычки «ёлочки». Факты и цифры — только из данных и скринов, не выдумывай. Конкретика под клиента.`;}
+
+let busy=false;
+async function generate(){
+  if(busy)return;
+  const s=fields();
+  if(!s.niche&&!shots.length){alert('Добавь скрины или заполни нишу — иначе нечего анализировать.');return;}
+  save();busy=true;results=[];visualNotes='';
+  document.getElementById('formCard').style.display='none';document.getElementById('results').style.display='none';
+  document.getElementById('progress').style.display='block';document.querySelector('#progress .spinner').style.display='block';
+  buildSteps();window.scrollTo({top:0,behavior:'smooth'});
+
+  if(shots.length){document.getElementById('progTitle').textContent='Читаю скриншоты…';document.getElementById('progSub').textContent='Claude Vision разбирает профиль по картинкам.';
+    try{visualNotes=await analyzeShots(s);}catch(e){visualNotes='';showTopError('Не удалось прочитать скрины: '+e.message);}}
+  document.getElementById('progTitle').textContent='Собираю продукт…';document.getElementById('progSub').textContent='Части появляются по мере готовности.';
+
+  let prior='';
+  for(let i=0;i<PARTS.length;i++){setStep(i,'run');
+    try{let content=(PARTS[i].vision&&shots.length)?[{type:'text',text:basePrompt(s,PARTS[i],prior)}].concat(imgBlocks()):basePrompt(s,PARTS[i],prior);
+      const text=await anth(content,PARTS[i].web?3800:(PARTS[i].n==='15'?3800:(i===7?3000:2400)),PARTS[i].web?WEB_TOOL:null);results[i]={ok:true,text};if(i<5)prior+=`\n[${PARTS[i].t}]: ${text.slice(0,600)}`;setStep(i,'done');}
+    catch(e){results[i]={ok:false,err:e.message};setStep(i,'err');}
+    setBar((i+1)/PARTS.length);renderResults(s);if(i<PARTS.length-1)await sleep(700);}
+  document.getElementById('progTitle').textContent='Готово ✓';document.getElementById('progSub').textContent='Все части собраны и сохранены в базу.';
+  document.querySelector('#progress .spinner').style.display='none';renderResults(s);persistProject(s);busy=false;
+}
+function buildSteps(list){list=list||PARTS;document.getElementById('steps').innerHTML=list.map((p,i)=>`<div class="step" id="st${i}"><div class="dot">${p.n}</div><div>${p.t}</div></div>`).join('');setBar(0);}
+function setStep(i,cls){const el=document.getElementById('st'+i);if(!el)return;el.classList.remove('run','done','err');el.classList.add(cls);if(cls==='done')el.querySelector('.dot').textContent='✓';if(cls==='err')el.querySelector('.dot').textContent='!';}
+function setBar(f){document.getElementById('barFill').style.width=Math.round(f*100)+'%';}
+function showTopError(m){const n=document.createElement('div');n.className='notice';n.textContent=m;document.getElementById('progress').appendChild(n);}
+
+function renderResults(s){
+  document.getElementById('visBox').innerHTML=visualNotes?`<div class="visnote"><b>📷 Что увидел на скринах:</b><br>${esc(visualNotes).replace(/\n/g,'<br>')}</div>`:'';
+  const box=document.getElementById('parts');box.innerHTML='';
+  results.forEach((r,i)=>{if(!r)return;
+    if(PARTS[i].group){const g=document.createElement('div');g.className='grouplab';g.textContent=PARTS[i].group;box.appendChild(g);}
+    const d=document.createElement('details');d.className='part';if(i===0)d.open=true;
+    const inner=r.ok?`<div class="md">${mdToHtml(r.text)}</div>`:`<p class="parterr">Ошибка: ${esc(r.err)}. <a href="#" onclick="retry(${i});return false">Повторить</a></p>`;
+    d.innerHTML=`<summary><span class="idx">${PARTS[i].n}</span>${PARTS[i].t}<span class="chev">›</span></summary><div class="body">${inner}</div>`;box.appendChild(d);});
+  document.getElementById('resTitle').textContent=`Продукт для ${v(s.ig,'клиента')} — ${results.filter(r=>r&&r.ok).length}/${PARTS.length}`;
+  document.getElementById('results').style.display='block';
+}
+async function retryFailed(){if(busy)return;busy=true;const s=fields();const bad=[];results.forEach((r,i)=>{if(!r||!r.ok)bad.push(i);});
+  if(!bad.length){busy=false;alert('Все части уже готовы.');return;}
+  for(const i of bad){await retry(i);await sleep(800);}persistProject(s);busy=false;}
+async function retry(i){const s=fields();setStep(i,'run');try{let c=(PARTS[i].vision&&shots.length)?[{type:'text',text:basePrompt(s,PARTS[i],'')}].concat(imgBlocks()):basePrompt(s,PARTS[i],'');results[i]={ok:true,text:await anth(c,PARTS[i].web||PARTS[i].n==='15'?3800:2400,PARTS[i].web?WEB_TOOL:null)};setStep(i,'done');}catch(e){results[i]={ok:false,err:e.message};setStep(i,'err');}renderResults(s);}
+
+function esc(t){return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function inline(t){return esc(t).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/(^|[^*])\*([^*]+)\*/g,'$1<em>$2</em>').replace(/`([^`]+)`/g,'<code>$1</code>');}
+function mdToHtml(md){const lines=(md||'').replace(/\r/g,'').split('\n');let html='',i=0;
+  const list=o=>{let it=[];const re=o?/^\s*\d+[.)]\s+(.*)/:/^\s*[-*•]\s+(.*)/;while(i<lines.length&&re.test(lines[i])){it.push('<li>'+inline(lines[i].match(re)[1])+'</li>');i++;}return`<${o?'ol':'ul'}>${it.join('')}</${o?'ol':'ul'}>`;};
+  while(i<lines.length){let ln=lines[i];if(/^\s*$/.test(ln)){i++;continue;}
+    if(/\|/.test(ln)&&i+1<lines.length&&/^\s*\|?[\s:|-]+\|[\s:|-]*$/.test(lines[i+1])){const cells=r=>r.replace(/^\s*\|/,'').replace(/\|\s*$/,'').split('|').map(c=>c.trim());let th='<tr>'+cells(ln).map(c=>`<th>${inline(c)}</th>`).join('')+'</tr>';i+=2;let body='';while(i<lines.length&&/\|/.test(lines[i])&&lines[i].trim()){body+='<tr>'+cells(lines[i]).map(c=>`<td>${inline(c)}</td>`).join('')+'</tr>';i++;}html+=`<table>${th}${body}</table>`;continue;}
+    let m;if(m=ln.match(/^(#{1,6})\s+(.*)/)){const l=Math.min(m[1].length,3);html+=`<h${l}>${inline(m[2])}</h${l}>`;i++;continue;}
+    if(/^\s*>\s?/.test(ln)){html+=`<blockquote>${inline(ln.replace(/^\s*>\s?/,''))}</blockquote>`;i++;continue;}
+    if(/^\s*[-*•]\s+/.test(ln)){html+=list(false);continue;}
+    if(/^\s*\d+[.)]\s+/.test(ln)){html+=list(true);continue;}
+    if(/^\s*(---|===)\s*$/.test(ln)){html+='<hr>';i++;continue;}
+    html+=`<p>${inline(ln)}</p>`;i++;}
+  return html;}
+
+function downloadMd(){const s=fields();let md=`# Контент-продукт — ${v(s.ig,'клиент')}\n\nНиша: ${v(s.niche,'—')} · Тип: ${s.type}\n`;if(visualNotes)md+=`\n## Что видно на скринах\n\n${visualNotes}\n`;results.forEach((r,i)=>{md+=`\n\n---\n\n## Часть ${PARTS[i].n}. ${PARTS[i].t}\n\n${r&&r.ok?r.text:'(не сгенерировано)'}`;});const b=new Blob([md],{type:'text/markdown'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`content-${(v(s.ig,'client')).replace(/[@\s]/g,'')||'client'}.md`;a.click();}
+
+function printPDF(){document.querySelectorAll('#parts details.part').forEach(d=>d.open=true);
+  const s=fields();document.title='Контент-продукт '+(v(s.ig,'client').replace(/[@\s]/g,'')||'client');
+  setTimeout(()=>window.print(),120);}
+function clearAll(){['f_ig','f_niche','f_comp'].forEach(id=>document.getElementById(id).value='');shots=[];renderThumbs();save();}
+function restart(){document.getElementById('results').style.display='none';document.getElementById('progress').style.display='none';document.getElementById('formCard').style.display='block';window.scrollTo({top:0,behavior:'smooth'});}
+
+function save(){try{localStorage.setItem(KEY,JSON.stringify(fields()));}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');if(d.ig)document.getElementById('f_ig').value=d.ig;if(d.niche)document.getElementById('f_niche').value=d.niche;if(d.competitors)document.getElementById('f_comp').value=d.competitors;if(d.type){acctType=d.type;document.querySelectorAll('#seg button').forEach(b=>b.classList.toggle('on',b.dataset.val===d.type));}if(d.lang){contentLang=d.lang;document.querySelectorAll('#segLang button').forEach(b=>b.classList.toggle('on',b.dataset.val===d.lang));}}catch(e){}}
+/* ================= БАЗА КЛИЕНТОВ ================= */
+const DB='cs_projects_v1';
+function loadDB(){try{return JSON.parse(localStorage.getItem(DB)||'{}');}catch(e){return{};}}
+function saveDB(db){try{localStorage.setItem(DB,JSON.stringify(db));}catch(e){alert('Хранилище переполнено. Сделай «Бэкап базы» и удали старых клиентов.');}}
+function pid(ig){return (ig||'client').toLowerCase().replace(/[^a-z0-9@._-]/g,'')||('client'+Date.now());}
+function setSeg(id,val){document.querySelectorAll('#'+id+' button').forEach(b=>b.classList.toggle('on',b.dataset.val===val));}
+
+function persistProject(s){const db=loadDB();const id=pid(s.ig);const ex=db[id]||{};
+  db[id]={id,ig:s.ig,niche:s.niche,competitors:s.competitors,type:s.type,lang:s.lang,
+    createdAt:ex.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),
+    visualNotes:visualNotes||'',
+    results:PARTS.map((pt,i)=>({n:pt.n,t:pt.t,ok:!!(results[i]&&results[i].ok),text:results[i]&&results[i].ok?results[i].text:''})),
+    rounds:ex.rounds||[]};
+  saveDB(db);renderClients();}
+
+function renderClients(){const db=loadDB();const ids=Object.keys(db).sort((a,b)=>(db[b].updatedAt||'').localeCompare(db[a].updatedAt||''));
+  const card=document.getElementById('clientsCard');const list=document.getElementById('clientList');
+  if(!ids.length){card.style.display='none';return;}
+  card.style.display='block';
+  list.innerHTML=ids.map(id=>{const p=db[id];const done=(p.results||[]).filter(r=>r.ok).length;const d=new Date(p.updatedAt||p.createdAt).toLocaleDateString('ru-RU');const rounds=(p.rounds||[]).length;
+    return `<div class="cli"><div class="cli-info"><b>${esc(p.ig||id)}</b><span>${esc((p.niche||'').slice(0,64))}</span><small>обновлён ${d} · частей ${done}/14${rounds?' · доп. месяцев: '+rounds:''}</small></div>
+      <div class="cli-acts"><button class="btn btn-ghost" onclick="openProject('${id}')">Открыть</button><button class="btn btn-ghost" onclick="nextMonth('${id}')">+30 дней</button><button class="btn btn-ghost" onclick="delProject('${id}')">🗑</button></div></div>`;}).join('');}
+
+function delProject(id){if(!confirm('Удалить клиента из базы?'))return;const db=loadDB();delete db[id];saveDB(db);renderClients();}
+
+function renderProject(p){
+  visualNotes=p.visualNotes||'';
+  results=PARTS.map(pt=>{const f=(p.results||[]).find(x=>x.n===pt.n);return f&&f.ok?{ok:true,text:f.text}:{ok:false,err:'нет данных'};});
+  renderResults({ig:p.ig,niche:p.niche,type:p.type,lang:p.lang});
+  const box=document.getElementById('parts');
+  (p.rounds||[]).forEach(rd=>{const h=document.createElement('div');h.className='grouplab';h.textContent='📅 Следующий месяц · '+new Date(rd.date).toLocaleDateString('ru-RU');box.appendChild(h);
+    rd.results.forEach(r=>{const d=document.createElement('details');d.className='part';
+      const inner=r.text?`<div class="md">${mdToHtml(r.text)}</div>`:`<p class="parterr">Ошибка: ${esc(r.err||'')}</p>`;
+      d.innerHTML=`<summary><span class="idx">${r.n}</span>${esc(r.t)}<span class="chev">›</span></summary><div class="body">${inner}</div>`;box.appendChild(d);});});
+  document.getElementById('results').style.display='block';}
+
+function openProject(id){const db=loadDB();const p=db[id];if(!p)return;
+  document.getElementById('f_ig').value=p.ig||'';document.getElementById('f_niche').value=p.niche||'';document.getElementById('f_comp').value=p.competitors||'';
+  acctType=p.type||'Действующий';setSeg('seg',acctType);contentLang=p.lang||'Русский';setSeg('segLang',contentLang);
+  shots=[];renderThumbs();document.getElementById('progress').style.display='none';renderProject(p);
+  window.scrollTo({top:0,behavior:'smooth'});}
+
+async function nextMonth(id){if(busy)return;const db=loadDB();const p=db[id];if(!p)return;
+  const okAnalysis=(p.results||[]).some(r=>r.ok);
+  if(!okAnalysis){alert('У этого клиента ещё нет анализа. Сначала открой и собери продукт.');return;}
+  visualNotes=p.visualNotes||'';contentLang=p.lang||'Русский';acctType=p.type||'Действующий';
+  const s={ig:p.ig,niche:p.niche,expert:p.expert,type:acctType,lang:contentLang,shots:0};
+  const idxs=[7,8,9,10,11,12]; // 08 план + сценарии + прогревы
+  const list=idxs.map(i=>PARTS[i]);
+  const analysis=(p.results||[]).filter(r=>r.ok&&['01','02','03','04','05','06','07'].includes(r.n)).map(r=>`[${r.t}]: ${r.text.slice(0,450)}`).join('\n');
+  const prevPlan=[((p.results||[]).find(r=>r.n==='08')||{}).text||''].concat((p.rounds||[]).map(rd=>((rd.results||[]).find(x=>x.n==='08')||{}).text||'')).join('\n').slice(0,1600);
+  const monthNo=2+((p.rounds||[]).length);
+  busy=true;
+  document.getElementById('formCard').style.display='none';document.getElementById('results').style.display='none';
+  document.getElementById('progress').style.display='block';document.querySelector('#progress .spinner').style.display='block';
+  document.getElementById('progTitle').textContent=`Идеи и сценарии на месяц ${monthNo}…`;
+  document.getElementById('progSub').textContent='Строю следующий 30-дневный цикл на основе сохранённого анализа.';
+  buildSteps(list);window.scrollTo({top:0,behavior:'smooth'});
+  const round=[];
+  for(let k=0;k<idxs.length;k++){setStep(k,'run');const part=PARTS[idxs[k]];
+    const extra=`\n\nЭто контент на СЛЕДУЮЩИЙ 30-дневный цикл (месяц ${monthNo}) для того же аккаунта. Анализ и прошлый контент уже были — НЕ повторяй прошлые темы, хуки и сценарии из предыдущего плана:\n${prevPlan}\nДай свежие идеи, которые логично продолжают воронку и ведут аудиторию дальше к покупке.`;
+    try{const text=await anth(basePrompt(s,part,analysis)+extra,part.n==='08'?3000:2400);round.push({n:part.n,t:part.t,text});setStep(k,'done');}
+    catch(e){round.push({n:part.n,t:part.t,text:'',err:e.message});setStep(k,'err');}
+    setBar((k+1)/idxs.length);if(k<idxs.length-1)await sleep(700);}
+  p.rounds=p.rounds||[];p.rounds.push({date:new Date().toISOString(),month:monthNo,results:round});p.updatedAt=new Date().toISOString();
+  db[id]=p;saveDB(db);renderClients();
+  document.getElementById('progTitle').textContent='Готово ✓';document.getElementById('progSub').textContent=`Контент на месяц ${monthNo} добавлен к клиенту.`;
+  document.querySelector('#progress .spinner').style.display='none';renderProject(p);busy=false;}
+
+function exportDB(){const b=new Blob([JSON.stringify(loadDB(),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='content-studio-base.json';a.click();}
+
+['f_ig','f_niche','f_comp'].forEach(id=>document.getElementById(id).addEventListener('input',save));
+document.getElementById('importFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const inc=JSON.parse(ev.target.result);const db=loadDB();Object.assign(db,inc);saveDB(db);renderClients();alert('База импортирована.');}catch(err){alert('Не удалось прочитать файл базы.');}};r.readAsText(f);});
+load();renderClients();
+</script>
+</body>
+</html>
