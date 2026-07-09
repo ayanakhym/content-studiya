@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Контент-студия PRO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     color-scheme: light;
@@ -14,7 +15,7 @@
     --ok:#16a34a; --radius:20px; --shadow:0 10px 34px rgba(60,20,80,.10);
   }
   *{box-sizing:border-box} html,body{margin:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+  body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
   .wrap{max-width:960px;margin:0 auto;padding:22px 18px 90px}
   a{color:var(--g4)}
 
@@ -125,19 +126,39 @@
   .cli-acts .btn{padding:7px 11px;font-size:12.5px}
   .foot{color:#a3a1b0;font-size:12px;text-align:center;margin-top:30px}
   @media print{
-    @page{margin:14mm}
+    @page{margin:0}
+    *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
     body{background:#fff}
     .wrap{padding:0;max-width:none}
     .hero,#formCard,#clientsCard,#progress,.res-actions,.foot,.notice{display:none!important}
-    #results{box-shadow:none;border:none;padding:0}
-    .res-top h2{font-size:22px}
-    .part{break-inside:avoid;box-shadow:none;border:1px solid #ddd}
-    .part>summary{background:#faf7fc}
+    #results{box-shadow:none;border:none;padding:0;background:none;margin:0}
+    #results .res-top{display:none!important}
+    #pdfCover{display:flex!important}
+    #visBox{margin:12px 16mm}
+    #parts{margin:0 16mm 16mm}
+    .grouplab{background:none;border:none;color:#c13584;padding:14px 0 2px;font-size:13px}
+    .part{break-inside:avoid;box-shadow:none;border:1px solid #eee;border-radius:14px;margin:12px 0;background:#fff;background-image:none}
+    .part>summary{background:linear-gradient(120deg,#fff3ea,#fdeaf1 55%,#f2eafb);border-radius:13px 13px 0 0;padding:13px 16px}
+    .part>summary .idx{background:linear-gradient(120deg,#f77737,#e1306c 55%,#833ab4);color:#fff}
     .part>summary .chev{display:none}
-    .part .body{display:block!important}
-    .grouplab{background:none;border:none;color:#c13584;padding-left:0}
-    details.part>.body{display:block!important}
+    .part .body{display:block!important;padding:8px 18px 14px}
+    .md h2,.md h3{page-break-after:avoid}
+    .md table,.md tr,.md img{page-break-inside:avoid}
+    .visnote{background:#eef7ff!important}
   }
+#pdfCover{display:none}
+h1,h2,h3,.hero h1,.res-top h2,.part>summary,.grouplab{font-family:"Manrope","Inter",-apple-system,sans-serif}
+.md h1,.md h2,.md h3{font-family:"Manrope","Inter",sans-serif}
+.md h2{color:#151320;border-bottom:2px solid #f3e3ee;padding-bottom:5px;margin-top:20px}
+.md h3{color:#c13584}
+.md strong{color:#b02a72;font-weight:700}
+.md blockquote{background:linear-gradient(120deg,#fff3ea,#fdeaf1);border-left:4px solid #e1306c;border-radius:8px;color:#5b3a4f}
+.md table th{background:#faf0f6}
+.cov-badge{font-size:13px;font-weight:800;letter-spacing:3px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);padding:8px 16px;border-radius:999px;margin-bottom:22px;color:#fff}
+.cov-title{font-size:56px;font-weight:800;letter-spacing:-1.5px;margin:0 0 12px;line-height:1;color:#fff;font-family:"Manrope",sans-serif}
+.cov-sub{font-size:20px;font-weight:600;opacity:.96;max-width:78%;color:#fff}
+.cov-meta{margin-top:28px;font-size:15px;opacity:.92;line-height:1.7;color:#fff}
+.cov-foot{position:absolute;bottom:22mm;left:22mm;font-size:12.5px;letter-spacing:2px;opacity:.85;color:#fff;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -198,6 +219,13 @@
     <div class="steps" id="steps"></div>
   </div>
 
+  <div id="pdfCover" style="flex-direction:column;justify-content:center;align-items:flex-start;height:100vh;padding:0 22mm;box-sizing:border-box;position:relative;background:radial-gradient(120% 150% at 8% 6%,#ffd27a 0,rgba(255,210,122,0) 45%),radial-gradient(120% 150% at 92% 12%,#ff7a45 0,rgba(255,122,69,0) 50%),radial-gradient(150% 170% at 85% 105%,#7d34c0 0,rgba(125,52,192,0) 55%),radial-gradient(130% 150% at 12% 100%,#e1306c 0,rgba(225,48,108,0) 52%),linear-gradient(125deg,#f77737,#e1306c 52%,#833ab4);page-break-after:always">
+    <div class="cov-badge">КОНТЕНТ-СТРАТЕГИЯ</div>
+    <div class="cov-title">Контент Студия</div>
+    <div class="cov-sub" id="covSub"></div>
+    <div class="cov-meta" id="covMeta"></div>
+    <div class="cov-foot">Аналитика · Стратегия · Контент — под ключ</div>
+  </div>
   <div class="card" id="results">
     <div class="res-top"><h2 id="resTitle">Продукт готов</h2>
       <div class="res-actions">
@@ -277,19 +305,15 @@ function renderThumbs(){thumbs.innerHTML='';shots.forEach((s,i)=>{const d=docume
 
 const WEB_TOOL=[{type:'web_search_20250305',name:'web_search',max_uses:6}];
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
-let accessCode=localStorage.getItem('cs_access_code')||'';
-function ensureAccessCode(){if(!accessCode){accessCode=(prompt('Код доступа к студии:')||'').trim();if(accessCode)localStorage.setItem('cs_access_code',accessCode);}return accessCode;}
 async function anth(content,maxTokens,tools){
-  ensureAccessCode();
   const body={model:getModel(),max_tokens:maxTokens||2400,messages:[{role:'user',content}]};
   if(tools) body.tools=tools;
   let lastErr='ошибка';
   for(let attempt=0;attempt<5;attempt++){
     let res;
-    try{res=await fetch('/api/generate',{method:'POST',headers:{'content-type':'application/json','x-access-code':accessCode},body:JSON.stringify(body)});}
+    try{res=await fetch('/api/generate',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});}
     catch(e){lastErr='сеть: '+(e.message||'нет соединения');await sleep(1500*(attempt+1));continue;}
     if(res.ok){const j=await res.json();return (j.content||[]).map(b=>b.text||'').join('').trim();}
-    if(res.status===401){accessCode='';localStorage.removeItem('cs_access_code');throw new Error('Неверный код доступа. Обнови страницу и введи код заново.');}
     let em='';try{em=(await res.json()).error?.message||'';}catch(e){}
     lastErr='API '+res.status+(em?': '+em.slice(0,180):'');
     if(res.status===429||res.status===500||res.status===503||res.status===529){
@@ -362,7 +386,7 @@ async function retryFailed(){if(busy)return;busy=true;const s=fields();const bad
   for(const i of bad){await retry(i);await sleep(800);}persistProject(s);busy=false;}
 async function retry(i){const s=fields();setStep(i,'run');try{let c=(PARTS[i].vision&&shots.length)?[{type:'text',text:basePrompt(s,PARTS[i],'')}].concat(imgBlocks()):basePrompt(s,PARTS[i],'');results[i]={ok:true,text:await anth(c,PARTS[i].web||PARTS[i].n==='15'?3800:2400,PARTS[i].web?WEB_TOOL:null)};setStep(i,'done');}catch(e){results[i]={ok:false,err:e.message};setStep(i,'err');}renderResults(s);}
 
-function esc(t){return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function esc(t){return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function inline(t){return esc(t).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/(^|[^*])\*([^*]+)\*/g,'$1<em>$2</em>').replace(/`([^`]+)`/g,'<code>$1</code>');}
 function mdToHtml(md){const lines=(md||'').replace(/\r/g,'').split('\n');let html='',i=0;
   const list=o=>{let it=[];const re=o?/^\s*\d+[.)]\s+(.*)/:/^\s*[-*•]\s+(.*)/;while(i<lines.length&&re.test(lines[i])){it.push('<li>'+inline(lines[i].match(re)[1])+'</li>');i++;}return`<${o?'ol':'ul'}>${it.join('')}</${o?'ol':'ul'}>`;};
@@ -378,9 +402,16 @@ function mdToHtml(md){const lines=(md||'').replace(/\r/g,'').split('\n');let htm
 
 function downloadMd(){const s=fields();let md=`# Контент-продукт — ${v(s.ig,'клиент')}\n\nНиша: ${v(s.niche,'—')} · Тип: ${s.type}\n`;if(visualNotes)md+=`\n## Что видно на скринах\n\n${visualNotes}\n`;results.forEach((r,i)=>{md+=`\n\n---\n\n## Часть ${PARTS[i].n}. ${PARTS[i].t}\n\n${r&&r.ok?r.text:'(не сгенерировано)'}`;});const b=new Blob([md],{type:'text/markdown'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`content-${(v(s.ig,'client')).replace(/[@\s]/g,'')||'client'}.md`;a.click();}
 
-function printPDF(){document.querySelectorAll('#parts details.part').forEach(d=>d.open=true);
-  const s=fields();document.title='Контент-продукт '+(v(s.ig,'client').replace(/[@\s]/g,'')||'client');
-  setTimeout(()=>window.print(),120);}
+function printPDF(){
+  document.querySelectorAll("#parts details.part").forEach(d=>d.open=true);
+  const s=fields();
+  const nn=(s.niche||"").slice(0,90);
+  document.getElementById("covSub").textContent=nn||"Разбор аккаунта и контент-стратегия";
+  const dd=new Date().toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"});
+  document.getElementById("covMeta").innerHTML=(s.ig?("<b>"+s.ig+"</b><br>"):"")+dd;
+  document.title="Контент Студия "+((s.ig||"client").replace(/[@\s]/g,"")||"client");
+  setTimeout(()=>window.print(),150);
+}
 function clearAll(){['f_ig','f_niche','f_comp'].forEach(id=>document.getElementById(id).value='');shots=[];renderThumbs();save();}
 function restart(){document.getElementById('results').style.display='none';document.getElementById('progress').style.display='none';document.getElementById('formCard').style.display='block';window.scrollTo({top:0,behavior:'smooth'});}
 
@@ -407,14 +438,7 @@ function renderClients(){const db=loadDB();const ids=Object.keys(db).sort((a,b)=
   card.style.display='block';
   list.innerHTML=ids.map(id=>{const p=db[id];const done=(p.results||[]).filter(r=>r.ok).length;const d=new Date(p.updatedAt||p.createdAt).toLocaleDateString('ru-RU');const rounds=(p.rounds||[]).length;
     return `<div class="cli"><div class="cli-info"><b>${esc(p.ig||id)}</b><span>${esc((p.niche||'').slice(0,64))}</span><small>обновлён ${d} · частей ${done}/14${rounds?' · доп. месяцев: '+rounds:''}</small></div>
-      <div class="cli-acts"><button class="btn btn-ghost" data-act="open" data-id="${esc(id)}">Открыть</button><button class="btn btn-ghost" data-act="next" data-id="${esc(id)}">+30 дней</button><button class="btn btn-ghost" data-act="del" data-id="${esc(id)}">🗑</button></div></div>`;}).join('');}
-document.getElementById('clientList').addEventListener('click',e=>{
-  const btn=e.target.closest('[data-act]');if(!btn)return;
-  const id=btn.dataset.id;
-  if(btn.dataset.act==='open')openProject(id);
-  else if(btn.dataset.act==='next')nextMonth(id);
-  else if(btn.dataset.act==='del')delProject(id);
-});
+      <div class="cli-acts"><button class="btn btn-ghost" onclick="openProject('${id}')">Открыть</button><button class="btn btn-ghost" onclick="nextMonth('${id}')">+30 дней</button><button class="btn btn-ghost" onclick="delProject('${id}')">🗑</button></div></div>`;}).join('');}
 
 function delProject(id){if(!confirm('Удалить клиента из базы?'))return;const db=loadDB();delete db[id];saveDB(db);renderClients();}
 
@@ -426,7 +450,7 @@ function renderProject(p){
   (p.rounds||[]).forEach(rd=>{const h=document.createElement('div');h.className='grouplab';h.textContent='📅 Следующий месяц · '+new Date(rd.date).toLocaleDateString('ru-RU');box.appendChild(h);
     rd.results.forEach(r=>{const d=document.createElement('details');d.className='part';
       const inner=r.text?`<div class="md">${mdToHtml(r.text)}</div>`:`<p class="parterr">Ошибка: ${esc(r.err||'')}</p>`;
-      d.innerHTML=`<summary><span class="idx">${esc(r.n)}</span>${esc(r.t)}<span class="chev">›</span></summary><div class="body">${inner}</div>`;box.appendChild(d);});});
+      d.innerHTML=`<summary><span class="idx">${r.n}</span>${esc(r.t)}<span class="chev">›</span></summary><div class="body">${inner}</div>`;box.appendChild(d);});});
   document.getElementById('results').style.display='block';}
 
 function openProject(id){const db=loadDB();const p=db[id];if(!p)return;
