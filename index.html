@@ -277,15 +277,19 @@ function renderThumbs(){thumbs.innerHTML='';shots.forEach((s,i)=>{const d=docume
 
 const WEB_TOOL=[{type:'web_search_20250305',name:'web_search',max_uses:6}];
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+let accessCode=localStorage.getItem('cs_access_code')||'';
+function ensureAccessCode(){if(!accessCode){accessCode=(prompt('Код доступа к студии:')||'').trim();if(accessCode)localStorage.setItem('cs_access_code',accessCode);}return accessCode;}
 async function anth(content,maxTokens,tools){
+  ensureAccessCode();
   const body={model:getModel(),max_tokens:maxTokens||2400,messages:[{role:'user',content}]};
   if(tools) body.tools=tools;
   let lastErr='ошибка';
   for(let attempt=0;attempt<5;attempt++){
     let res;
-    try{res=await fetch('/api/generate',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});}
+    try{res=await fetch('/api/generate',{method:'POST',headers:{'content-type':'application/json','x-access-code':accessCode},body:JSON.stringify(body)});}
     catch(e){lastErr='сеть: '+(e.message||'нет соединения');await sleep(1500*(attempt+1));continue;}
     if(res.ok){const j=await res.json();return (j.content||[]).map(b=>b.text||'').join('').trim();}
+    if(res.status===401){accessCode='';localStorage.removeItem('cs_access_code');throw new Error('Неверный код доступа. Обнови страницу и введи код заново.');}
     let em='';try{em=(await res.json()).error?.message||'';}catch(e){}
     lastErr='API '+res.status+(em?': '+em.slice(0,180):'');
     if(res.status===429||res.status===500||res.status===503||res.status===529){
@@ -358,7 +362,7 @@ async function retryFailed(){if(busy)return;busy=true;const s=fields();const bad
   for(const i of bad){await retry(i);await sleep(800);}persistProject(s);busy=false;}
 async function retry(i){const s=fields();setStep(i,'run');try{let c=(PARTS[i].vision&&shots.length)?[{type:'text',text:basePrompt(s,PARTS[i],'')}].concat(imgBlocks()):basePrompt(s,PARTS[i],'');results[i]={ok:true,text:await anth(c,PARTS[i].web||PARTS[i].n==='15'?3800:2400,PARTS[i].web?WEB_TOOL:null)};setStep(i,'done');}catch(e){results[i]={ok:false,err:e.message};setStep(i,'err');}renderResults(s);}
 
-function esc(t){return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function esc(t){return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function inline(t){return esc(t).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/(^|[^*])\*([^*]+)\*/g,'$1<em>$2</em>').replace(/`([^`]+)`/g,'<code>$1</code>');}
 function mdToHtml(md){const lines=(md||'').replace(/\r/g,'').split('\n');let html='',i=0;
   const list=o=>{let it=[];const re=o?/^\s*\d+[.)]\s+(.*)/:/^\s*[-*•]\s+(.*)/;while(i<lines.length&&re.test(lines[i])){it.push('<li>'+inline(lines[i].match(re)[1])+'</li>');i++;}return`<${o?'ol':'ul'}>${it.join('')}</${o?'ol':'ul'}>`;};
@@ -403,7 +407,14 @@ function renderClients(){const db=loadDB();const ids=Object.keys(db).sort((a,b)=
   card.style.display='block';
   list.innerHTML=ids.map(id=>{const p=db[id];const done=(p.results||[]).filter(r=>r.ok).length;const d=new Date(p.updatedAt||p.createdAt).toLocaleDateString('ru-RU');const rounds=(p.rounds||[]).length;
     return `<div class="cli"><div class="cli-info"><b>${esc(p.ig||id)}</b><span>${esc((p.niche||'').slice(0,64))}</span><small>обновлён ${d} · частей ${done}/14${rounds?' · доп. месяцев: '+rounds:''}</small></div>
-      <div class="cli-acts"><button class="btn btn-ghost" onclick="openProject('${id}')">Открыть</button><button class="btn btn-ghost" onclick="nextMonth('${id}')">+30 дней</button><button class="btn btn-ghost" onclick="delProject('${id}')">🗑</button></div></div>`;}).join('');}
+      <div class="cli-acts"><button class="btn btn-ghost" data-act="open" data-id="${esc(id)}">Открыть</button><button class="btn btn-ghost" data-act="next" data-id="${esc(id)}">+30 дней</button><button class="btn btn-ghost" data-act="del" data-id="${esc(id)}">🗑</button></div></div>`;}).join('');}
+document.getElementById('clientList').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-act]');if(!btn)return;
+  const id=btn.dataset.id;
+  if(btn.dataset.act==='open')openProject(id);
+  else if(btn.dataset.act==='next')nextMonth(id);
+  else if(btn.dataset.act==='del')delProject(id);
+});
 
 function delProject(id){if(!confirm('Удалить клиента из базы?'))return;const db=loadDB();delete db[id];saveDB(db);renderClients();}
 
@@ -415,7 +426,7 @@ function renderProject(p){
   (p.rounds||[]).forEach(rd=>{const h=document.createElement('div');h.className='grouplab';h.textContent='📅 Следующий месяц · '+new Date(rd.date).toLocaleDateString('ru-RU');box.appendChild(h);
     rd.results.forEach(r=>{const d=document.createElement('details');d.className='part';
       const inner=r.text?`<div class="md">${mdToHtml(r.text)}</div>`:`<p class="parterr">Ошибка: ${esc(r.err||'')}</p>`;
-      d.innerHTML=`<summary><span class="idx">${r.n}</span>${esc(r.t)}<span class="chev">›</span></summary><div class="body">${inner}</div>`;box.appendChild(d);});});
+      d.innerHTML=`<summary><span class="idx">${esc(r.n)}</span>${esc(r.t)}<span class="chev">›</span></summary><div class="body">${inner}</div>`;box.appendChild(d);});});
   document.getElementById('results').style.display='block';}
 
 function openProject(id){const db=loadDB();const p=db[id];if(!p)return;
