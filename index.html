@@ -365,7 +365,7 @@ async function generate(){
   document.getElementById('progTitle').textContent='Готово ✓';document.getElementById('progSub').textContent='Все части собраны и сохранены в базу.';
   document.querySelector('#progress .spinner').style.display='none';renderResults(s);persistProject(s);busy=false;
 }
-function buildSteps(list){list=list||PARTS;document.getElementById('steps').innerHTML=list.map((p,i)=>`<div class="step" id="st${i}"><div class="dot">${p.n}</div><div>${p.t}</div></div>`).join('');setBar(0);}
+function buildSteps(idxs){idxs=(idxs&&idxs.length)?idxs:PARTS.map((_,i)=>i);document.getElementById("steps").innerHTML=idxs.map(i=>'<div class="step" id="st'+i+'"><div class="dot">'+PARTS[i].n+'</div><div>'+PARTS[i].t+'</div></div>').join("");setBar(0);}
 function setStep(i,cls){const el=document.getElementById('st'+i);if(!el)return;el.classList.remove('run','done','err');el.classList.add(cls);if(cls==='done')el.querySelector('.dot').textContent='✓';if(cls==='err')el.querySelector('.dot').textContent='!';}
 function setBar(f){document.getElementById('barFill').style.width=Math.round(f*100)+'%';}
 function showTopError(m){const n=document.createElement('div');n.className='notice';n.textContent=m;document.getElementById('progress').appendChild(n);}
@@ -474,12 +474,12 @@ async function nextMonth(id){if(busy)return;const db=loadDB();const p=db[id];if(
   document.getElementById('progress').style.display='block';document.querySelector('#progress .spinner').style.display='block';
   document.getElementById('progTitle').textContent=`Идеи и сценарии на месяц ${monthNo}…`;
   document.getElementById('progSub').textContent='Строю следующий 30-дневный цикл на основе сохранённого анализа.';
-  buildSteps(list);window.scrollTo({top:0,behavior:'smooth'});
+  buildSteps(idxs);window.scrollTo({top:0,behavior:'smooth'});
   const round=[];
-  for(let k=0;k<idxs.length;k++){setStep(k,'run');const part=PARTS[idxs[k]];
+  for(let k=0;k<idxs.length;k++){const __i=idxs[k];setStep(__i,"run");const part=PARTS[__i];
     const extra=`\n\nЭто контент на СЛЕДУЮЩИЙ 30-дневный цикл (месяц ${monthNo}) для того же аккаунта. Анализ и прошлый контент уже были — НЕ повторяй прошлые темы, хуки и сценарии из предыдущего плана:\n${prevPlan}\nДай свежие идеи, которые логично продолжают воронку и ведут аудиторию дальше к покупке.`;
-    try{const text=await anth(basePrompt(s,part,analysis)+extra,part.n==='08'?3000:2400);round.push({n:part.n,t:part.t,text});setStep(k,'done');}
-    catch(e){round.push({n:part.n,t:part.t,text:'',err:e.message});setStep(k,'err');}
+    try{const text=await anth(basePrompt(s,part,analysis)+extra,part.n==='08'?3000:2400);round.push({n:part.n,t:part.t,text});setStep(__i,"done");}
+    catch(e){round.push({n:part.n,t:part.t,text:"",err:e.message});setStep(__i,"err");}
     setBar((k+1)/idxs.length);if(k<idxs.length-1)await sleep(700);}
   p.rounds=p.rounds||[];p.rounds.push({date:new Date().toISOString(),month:monthNo,results:round});p.updatedAt=new Date().toISOString();
   db[id]=p;saveDB(db);renderClients();
