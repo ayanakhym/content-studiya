@@ -1,5 +1,5 @@
 // Serverless-функция Vercel. Ключ берётся из переменной окружения (Settings → Environment Variables).
-// В браузер ключ не попадает.
+// В браузер ключ не попадает. Доступ открытый (без кода) — по ссылке.
 const ALLOWED_MODELS = ['claude-opus-4-8'];
 const MAX_TOKENS_CEILING = 4000;
 const MAX_WEB_SEARCH_USES = 6;
@@ -9,10 +9,6 @@ module.exports = async (req, res) => {
 
   const KEY = process.env.ANTHROPIC_API_KEY;
   if (!KEY) { res.status(500).json({ error: 'ANTHROPIC_API_KEY не задан в настройках Vercel' }); return; }
-
-  const ACCESS_CODE = process.env.ACCESS_CODE;
-  if (!ACCESS_CODE) { res.status(500).json({ error: 'ACCESS_CODE не задан в настройках Vercel' }); return; }
-  if (req.headers['x-access-code'] !== ACCESS_CODE) { res.status(401).json({ error: 'Неверный код доступа' }); return; }
 
   let body = req.body;
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = null; } }
