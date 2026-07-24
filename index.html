@@ -300,7 +300,7 @@ drop.onclick=e=>{if(e.target.tagName!=='SPAN')fileInput.click();};
 ['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('hover');}));
 drop.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
 fileInput.onchange=e=>addFiles(e.target.files);
-function addFiles(list){[...list].forEach(f=>{if(!f.type.startsWith('image/'))return;const r=new FileReader();r.onload=ev=>{shots.push({name:f.name,src:ev.target.result});renderThumbs();};r.readAsDataURL(f);});}
+function addFiles(list){[...list].forEach(f=>{if(!f.type.startsWith("image/"))return;const r=new FileReader();r.onload=ev=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height;const MAXW=1200,MAXH=1600;if(w>MAXW){h=Math.round(h*MAXW/w);w=MAXW;}if(h>MAXH){w=Math.round(w*MAXH/h);h=MAXH;}const c=document.createElement("canvas");c.width=w;c.height=h;const ctx=c.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);let data;try{data=c.toDataURL("image/jpeg",0.7);}catch(e){data=ev.target.result;}shots.push({name:f.name,src:data});renderThumbs();};img.onerror=()=>{shots.push({name:f.name,src:ev.target.result});renderThumbs();};img.src=ev.target.result;};r.readAsDataURL(f);});}
 function renderThumbs(){thumbs.innerHTML='';shots.forEach((s,i)=>{const d=document.createElement('div');d.className='thumb';d.innerHTML=`<img src="${s.src}"><span data-i="${i}">×</span>`;d.querySelector('span').onclick=ev=>{ev.stopPropagation();shots.splice(i,1);renderThumbs();};thumbs.appendChild(d);});}
 
 const WEB_TOOL=[{type:'web_search_20250305',name:'web_search',max_uses:6}];
@@ -323,7 +323,7 @@ async function anth(content,maxTokens,tools){
   }
   throw new Error(lastErr+' — не удалось после нескольких попыток (перегрузка/лимит)');
 }
-function imgBlocks(){return shots.slice(0,8).map(sh=>{const m=sh.src.match(/^data:(.*?);base64,(.*)$/);return m?{type:'image',source:{type:'base64',media_type:m[1],data:m[2]}}:null;}).filter(Boolean);}
+function imgBlocks(){return shots.slice(0,6).map(sh=>{const m=sh.src.match(/^data:(.*?);base64,(.*)$/);return m?{type:'image',source:{type:'base64',media_type:m[1],data:m[2]}}:null;}).filter(Boolean);}
 async function analyzeShots(s){if(!shots.length)return'';const prompt=`Это скриншоты Instagram-профиля (${v(s.ig,'клиент')}). Опиши ФАКТАМИ, что реально видно, не додумывая: текст шапки (имя, описание, ссылка, кнопки), аватар; темы и стиль ленты; есть ли лицо в кадре; наличие и темы Reels; закреплённые сторис; любые цифры статистики (подписчики, охваты, вовлечённость). Если чего-то не видно — так и скажи. Компактно, по разделам. Ответь ${langReq()}.`;return await anth([{type:'text',text:prompt}].concat(imgBlocks()),1400);}
 
 function context(s){const typ=s.type==='С нуля'?'аккаунт создаётся С НУЛЯ (стратегия с чистого листа)':'аккаунт действующий';
